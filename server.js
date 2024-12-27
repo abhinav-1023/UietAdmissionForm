@@ -11,7 +11,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: 'https://uiet-admission-form.vercel.app' }));
+app.use(cors({
+    origin: ['https://uiet-admission-form.vercel.app', 'https://uiet-admission-form-na532n94n-abhinav-1023s-projects.vercel.app'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
