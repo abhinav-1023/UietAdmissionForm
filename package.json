@@ -2,7 +2,7 @@
   "name": "admin_form-main",
   "version": "1.0.0",
   "description": "Welcome To UIET Admission Portal",
-  "main": "server.mjs",
+  "main": "submit-admission.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -22,3 +22,5 @@
     "pth": "^1.0.0"
   }
 }
+
+{
