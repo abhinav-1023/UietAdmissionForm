@@ -3,7 +3,11 @@
   "builds": [
     { "src": "api/submit-admission.js", "use": "@vercel/node" }
   ],
+  {
+
   "routes": [
-    { "src": "/api/submit-admission", "dest": "api/submit-admission.js" }
+    { "src": "/api/submit-admission", "dest": "/api/submit-admission.js" }
   ]
+
+
 }
