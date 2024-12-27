@@ -70,11 +70,8 @@ const admissionSchema = new mongoose.Schema({
 const Admission = mongoose.model("Admission", admissionSchema);
 
 // Form Submission Route
-app.post(
-  "/submit-admission",
-  upload.fields([{ name: "photo" }, { name: "receipt" }]),
-  async (req, res) => {
-    try {
+app.post( "/submit-admission", upload.fields([{ name: "photo" }, { name: "receipt" }]), async (req, res) => {
+    try{
       console.log("Request Body:", req.body); // Debug request body
       console.log("Uploaded Files:", req.files); // Debug uploaded files
 
@@ -110,11 +107,10 @@ app.post(
 
       await admission.save();
       res.json({ message: "Form submitted successfully!" });
-    } catch (error) {
-      console.error("Error saving data:", error); // Log error
-      res.status(500).json({ message: "Error saving data", error: error.message });
-    }
-  }
+    } catch (error) { console.error("Error saving data:", error); // Log error 
+                     res.status(500).json({ message: "Error saving data", error: error.message });
+                    }
+   }
 );
 
 // Test Route
