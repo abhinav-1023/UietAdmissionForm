@@ -4,7 +4,7 @@ const path = require("path");
 const fs = require("fs");
 
 // MongoDB connection URI
-const uri = "mongodb+srv://<username>:<password>@cluster0.mongodb.net/admissions?retryWrites=true&w=majority";
+const uri = 'mongodb+srv://Abhinav:qprovers13@cluster0.omb8n.mongodb.net/admission_form?retryWrites=true&w=majority&appName=Cluster0';
 
 // MongoDB client
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
