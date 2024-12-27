@@ -1,4 +1,5 @@
 import express from 'express';
+import multer from 'multer';
 import mongoose from 'mongoose';
 import cors from 'cors';
 
@@ -44,53 +45,52 @@ const admissionSchema = new mongoose.Schema({
 
 const Admission = mongoose.model('Admission', admissionSchema);
 
-// Handle Form Submission
-app.post('/submit-admission', upload.fields([{ name: 'photo' }, { name: 'fee-receipt' }]), async (req, res) => {
-    try {
-        const formData = req.body;
-        const photo = req.files['photo'] ? req.files['photo'][0].path : '';
-        const feeReceipt = req.files['fee-receipt'] ? req.files['fee-receipt'][0].path : '';
+// Multer Configuration for File Uploads
+const upload = multer({ dest: 'uploads/' });
 
+// Handle Form Submission
+app.post('/submit-admission', upload.none(), async (req, res) => {
+    try {
+        console.log('Form Data:', req.body);
+
+        // Create admission document
         const admission = new Admission({
-            name: formData.name,
-            father_name: formData['father-name'],
-            mother_name: formData['mother-name'],
-            dob: formData.dob,
-            phone: formData.phone,
-            emergency_contact: formData['emergency-contact'],
-            address: formData.address,
-            course: formData.course,
-            branch: formData.branch,
-            board10: formData.board10,
-            marks10: formData.marks10,
-            board12: formData.board12,
-            marks12: formData.marks12,
-            physics_marks: formData['physics-marks'],
-            chemistry_marks: formData['chemistry-marks'],
-            maths_marks: formData['maths-marks'],
-            jee_score: formData['jee-score'],
-            cuet_score: formData['cuet-score'],
-            category: formData.category,
-            fee_receipt: feeReceipt,
-            photo: photo
+            name: req.body.name,
+            father_name: req.body['father-name'],
+            mother_name: req.body['mother-name'],
+            dob: req.body.dob,
+            phone: req.body.phone,
+            emergency_contact: req.body['emergency-contact'],
+            address: req.body.address,
+            course: req.body.course,
+            branch: req.body.branch,
+            board10: req.body.board10,
+            marks10: req.body.marks10,
+            board12: req.body.board12,
+            marks12: req.body.marks12,
+            physics_marks: req.body['physics-marks'],
+            chemistry_marks: req.body['chemistry-marks'],
+            maths_marks: req.body['maths-marks'],
+            jee_score: req.body['jee-score'],
+            cuet_score: req.body['cuet-score'],
+            category: req.body.category
         });
 
+        // Save to database
         await admission.save();
-        res.json({ message: 'Form submitted successfully!' });
+        res.status(200).json({ message: 'Form submitted successfully!' });
     } catch (error) {
+        console.error('Error during form submission:', error);
         res.status(500).json({ message: 'Error saving data', error: error.message });
     }
 });
-
 
 // Basic GET Route for Testing
 app.get('/', (req, res) => {
     res.send("Hello, World!");
 });
 
-// Start Server After Successful DB Connection
-mongoose.connection.once('open', () => {
-    app.listen(3000, () => {
-        console.log('Server started on http://localhost:3000');
-    });
+// Start Server
+app.listen(3000, () => {
+    console.log('Server started on http://localhost:3000');
 });
