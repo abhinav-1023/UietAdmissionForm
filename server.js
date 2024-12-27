@@ -10,7 +10,12 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors(
+  {
+    origin:["uiet-admission-form.vercel.app"],
+    methods:["POST","GET"],
+    credentials: true}
+));
 app.use("/uploads", express.static("uploads")); // Serve static files
 
 // Database Connection
