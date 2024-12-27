@@ -118,6 +118,6 @@ app.get("/", (req, res) => {
 // Start Server
 mongoose.connection.once("open", () => {
   app.listen(3000, () => {
-    console.log("Server started on https://uiet-admission-form-4ae9dx8il-abhinav-1023s-projects.vercel.app");
+    console.log("Server started on uiet-admission-form-ozkt2n9lx-abhinav-1023s-projects.vercel.app");
   });
 });
