@@ -13,6 +13,7 @@ const app = express();
 app.use('/favicon.ico', express.static(path.join(__dirname, 'favicon.ico')));
 app.use(express.static(path.join(__dirname, 'public')));
 
+
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
