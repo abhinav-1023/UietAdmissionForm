@@ -17,6 +17,7 @@ app.use(cors({
   methods: "GET,POST",
   allowedHeaders: "Content-Type,Authorization",
 }));
+
 app.use("/uploads", express.static("uploads"));
 
 // Database Connection
