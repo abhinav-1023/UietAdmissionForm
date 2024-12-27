@@ -8,12 +8,25 @@ const app = express();
 const path = require('path');
 app.use('/favicon.ico', express.static(path.join(__dirname, 'favicon.ico')));
 
+app.use(express.static(path.join(__dirname, 'public')));
 
 
 // Middleware
-app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors({ origin: 'https://uiet-admission-form.vercel.app' }));
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/'); // Save files in the 'uploads' directory
+    },
+    filename: (req, file, cb) => {
+        cb(null, `${Date.now()}-${file.originalname}`); // Unique filename
+    },
+});
+
+const upload = multer({ storage });
+
+
 
 // Database Connection
 mongoose.connect('mongodb+srv://Abhinav:qprovers13@cluster0.omb8n.mongodb.net/admission_form?retryWrites=true&w=majority&appName=Cluster0')
@@ -54,9 +67,10 @@ const Admission = mongoose.model('Admission', admissionSchema);
 const upload = multer({ dest: 'uploads/' });
 
 // Handle Form Submission
-app.post('/submit-admission', upload.none(), async (req, res) => {
+app.post('/submit-admission', upload.fields([{ name: 'photo' }, { name: 'receipt' }]), async (req, res) => {
     try {
         console.log('Form Data:', req.body);
+        console.log('Files:', req.files);
 
         // Create admission document
         const admission = new Admission({
@@ -73,12 +87,10 @@ app.post('/submit-admission', upload.none(), async (req, res) => {
             marks10: req.body.marks10,
             board12: req.body.board12,
             marks12: req.body.marks12,
-            physics_marks: req.body['physics-marks'],
-            chemistry_marks: req.body['chemistry-marks'],
-            maths_marks: req.body['maths-marks'],
             jee_score: req.body['jee-score'],
             cuet_score: req.body['cuet-score'],
-            category: req.body.category
+            category: req.body.category,
+            submitted_at: Date.now(),
         });
 
         // Save to database
@@ -89,6 +101,7 @@ app.post('/submit-admission', upload.none(), async (req, res) => {
         res.status(500).json({ message: 'Error saving data', error: error.message });
     }
 });
+
 
 // Basic GET Route for Testing
 app.get('/', (req, res) => {
