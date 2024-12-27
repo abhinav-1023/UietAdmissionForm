@@ -36,8 +36,9 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
+const uri = process.env.MONGO_URI;
 // Database Connection
-mongoose.connect('mongodb+srv://Abhinav:qprovers13@cluster0.omb8n.mongodb.net/admission_form?retryWrites=true&w=majority&appName=Cluster0')
+mongoose.connect(uri)
     .then(() => {
         console.log('MongoDB connected successfully!');
     })
