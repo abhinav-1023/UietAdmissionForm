@@ -12,8 +12,12 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: process.env.CLIENT_URL }));
-app.use("/uploads", express.static("uploads")); // Serve static files
+app.use(cors({
+  origin: process.env.CLIENT_URL,
+  methods: "GET,POST",
+  allowedHeaders: "Content-Type,Authorization",
+}));
+app.use("/uploads", express.static("uploads"));
 
 // Database Connection
 mongoose
