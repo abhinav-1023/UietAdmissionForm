@@ -5,6 +5,11 @@ import cors from 'cors';
 
 const app = express();
 
+const path = require('path');
+app.use('/favicon.ico', express.static(path.join(__dirname, 'favicon.ico')));
+
+
+
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
