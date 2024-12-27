@@ -83,8 +83,11 @@ app.post('/submit-admission', upload.fields([{ name: 'photo' }, { name: 'receipt
             submitted_at: Date.now(),
         });
 
+        console.log('Saving admission document to database...');
+        
         // Save to database
         await admission.save();
+        console.log('Admission document saved successfully.');
         res.status(200).json({ message: 'Form submitted successfully!' });
     } catch (error) {
         console.error('Error during form submission:', error);
