@@ -11,8 +11,8 @@ const __dirname = path.dirname(__filename);
 const app = express();
 
 // Serve static files
-app.use('/favicon.ico', express.static(path.join(__dirname, 'favicon.ico')));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use('/favicon.ico', express.static(path.join(__dirname, '..', 'public', 'favicon.ico')));
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
@@ -21,7 +21,7 @@ app.use(
   cors({
     origin: [
       'https://uiet-admission-form.vercel.app',
-      'https://uiet-admission-form-na532n94n-abhinav-1023s-projects.vercel.app',
+      'https://uiet-admission-form-bguel8xoq-abhinav-1023s-projects.vercel.app',
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -31,7 +31,7 @@ app.use(
 // Multer Storage Configuration
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Save files in the 'uploads' directory
+    cb(null, path.join(__dirname, '..', 'uploads')); // Save files in the 'uploads' directory
   },
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}-${file.originalname}`); // Unique filename
@@ -39,9 +39,9 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// MongoDB URI (Replace with your actual MongoDB URI)
+// MongoDB URI
 const MONGO_URI =
-  'mongodb+srv://Abhinav:qprovers13@cluster0.omb8n.mongodb.net/admission_form?retryWrites=true&w=majority&appName=Cluster0'; // Replace placeholders
+  'mongodb+srv://Abhinav:qprovers13@cluster0.omb8n.mongodb.net/admission_form?retryWrites=true&w=majority&appName=Cluster0';
 
 // Database Connection
 mongoose
@@ -81,7 +81,7 @@ const Admission = mongoose.model('Admission', admissionSchema);
 
 // Handle Form Submission
 app.post(
-  '/submit-admission',
+  '/api/submit-admission',
   upload.fields([{ name: 'photo' }, { name: 'receipt' }]),
   async (req, res) => {
     try {
@@ -110,7 +110,7 @@ app.post(
       });
 
       console.log('Saving admission document to database...');
-
+      
       // Save to database
       await admission.save();
       console.log('Admission document saved successfully.');
@@ -127,8 +127,12 @@ app.get('/', (req, res) => {
   res.send('Hello, World!');
 });
 
-// Start Server
-const PORT = process.env.PORT || 3000; // Use environment variable or default to 3000
-app.listen(PORT, () => {
-  console.log(`Server started on http://localhost:${PORT}`);
-});
+// Start Express Server (only for local development)
+if (!process.env.AWS_LAMBDA_FUNCTION_NAME) {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`Server started on http://localhost:${PORT}`);
+  });
+}
+
+export default app;
