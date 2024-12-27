@@ -2,14 +2,12 @@ import express from 'express';
 import multer from 'multer';
 import mongoose from 'mongoose';
 import cors from 'cors';
+import path from 'path';
 
 const app = express();
 
-const path = require('path');
 app.use('/favicon.ico', express.static(path.join(__dirname, 'favicon.ico')));
-
 app.use(express.static(path.join(__dirname, 'public')));
-
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
@@ -25,8 +23,6 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
-
-
 
 // Database Connection
 mongoose.connect('mongodb+srv://Abhinav:qprovers13@cluster0.omb8n.mongodb.net/admission_form?retryWrites=true&w=majority&appName=Cluster0')
@@ -52,9 +48,6 @@ const admissionSchema = new mongoose.Schema({
     marks10: Number,
     board12: String,
     marks12: Number,
-    physics_marks: Number,
-    chemistry_marks: Number,
-    maths_marks: Number,
     jee_score: Number,
     cuet_score: Number,
     category: String,
@@ -62,9 +55,6 @@ const admissionSchema = new mongoose.Schema({
 });
 
 const Admission = mongoose.model('Admission', admissionSchema);
-
-// Multer Configuration for File Uploads
-const upload = multer({ dest: 'uploads/' });
 
 // Handle Form Submission
 app.post('/submit-admission', upload.fields([{ name: 'photo' }, { name: 'receipt' }]), async (req, res) => {
@@ -102,7 +92,6 @@ app.post('/submit-admission', upload.fields([{ name: 'photo' }, { name: 'receipt
     }
 });
 
-
 // Basic GET Route for Testing
 app.get('/', (req, res) => {
     res.send("Hello, World!");
@@ -112,4 +101,3 @@ app.get('/', (req, res) => {
 app.listen(3000, () => {
     console.log('Server started on http://localhost:3000');
 });
-
