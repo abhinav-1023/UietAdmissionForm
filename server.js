@@ -2,22 +2,25 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import multer from "multer";
-import path from "path";
 import fs from "fs";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: "https://uiet-admission-form.vercel.app/" }));
+app.use(cors({ origin: process.env.CLIENT_URL }));
 app.use("/uploads", express.static("uploads")); // Serve static files
 
 // Database Connection
 mongoose
-  .connect(
-    "mongodb+srv://Abhinav:qprovers13@cluster0.omb8n.mongodb.net/admission_form?retryWrites=true&w=majority&appName=Cluster0"
-  )
+  .connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => console.log("MongoDB connected successfully!"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
@@ -116,8 +119,9 @@ app.get("/", (req, res) => {
 });
 
 // Start Server
+const PORT = process.env.PORT || 3000;
 mongoose.connection.once("open", () => {
-  app.listen(3000, () => {
-    console.log("Server started on https://uiet-admission-form.vercel.app/");
+  app.listen(PORT, () => {
+    console.log(`Server started on port ${PORT}`);
   });
 });
