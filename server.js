@@ -1,128 +1,97 @@
-import express from "express";
-import mongoose from "mongoose";
-import cors from "cors";
-import multer from "multer";
-import fs from "fs";
-import dotenv from "dotenv";
-
-dotenv.config();
+import express from 'express';
+import multer from 'multer';
+import mongoose from 'mongoose';
+import cors from 'cors';
 
 const app = express();
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({
-  origin: process.env.CLIENT_URL,
-  methods: "GET,POST",
-  allowedHeaders: "Content-Type,Authorization",
-}));
-
-app.use("/uploads", express.static("uploads"));
+app.use(cors());
 
 // Database Connection
-mongoose
-  .connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("MongoDB connected successfully!"))
-  .catch((err) => console.error("MongoDB connection error:", err));
+mongoose.connect('mongodb+srv://Abhinav:qprovers13@cluster0.omb8n.mongodb.net/admission_form?retryWrites=true&w=majority&appName=Cluster0')
+    .then(() => {
+        console.log('MongoDB connected successfully!');
+    })
+    .catch(err => {
+        console.error('MongoDB connection error:', err);
+    });
 
-// Set up multer for file storage
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const dir = "./uploads";
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-    cb(null, dir);
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  },
-});
-
-const upload = multer({ storage: storage });
-
-// Schema
+// Define Mongoose Schema
 const admissionSchema = new mongoose.Schema({
-  name: String,
-  father_name: String,
-  mother_name: String,
-  dob: Date,
-  phone: String,
-  emergency_contact: String,
-  address: String,
-  course: String,
-  branch: String,
-  board10: String,
-  marks10: Number,
-  board12: String,
-  marks12: Number,
-  jee_score: Number,
-  cuet_score: Number,
-  category: String,
-  photo: String,
-  fee_receipt: String,
-  submitted_at: { type: Date, default: Date.now },
+    name: String,
+    father_name: String,
+    mother_name: String,
+    dob: Date,
+    phone: String,
+    emergency_contact: String,
+    address: String,
+    course: String,
+    branch: String,
+    board10: String,
+    marks10: Number,
+    board12: String,
+    marks12: Number,
+    physics_marks: Number,
+    chemistry_marks: Number,
+    maths_marks: Number,
+    jee_score: Number,
+    cuet_score: Number,
+    category: String,
+    submitted_at: { type: Date, default: Date.now }
 });
 
-const Admission = mongoose.model("Admission", admissionSchema);
+const Admission = mongoose.model('Admission', admissionSchema);
 
-// Form Submission Route
-app.post( "/submit-admission", upload.fields([{ name: "photo" }, { name: "receipt" }]), async (req, res) => {
-    try{
-      console.log("Request Body:", req.body); // Debug request body
-      console.log("Uploaded Files:", req.files); // Debug uploaded files
+// Multer Configuration for File Uploads
+const upload = multer({ dest: 'uploads/' });
 
-      const formData = req.body;
-      const photo = req.files["photo"] ? req.files["photo"][0].path : "";
-      const feeReceipt = req.files["receipt"]
-        ? req.files["receipt"][0].path
-        : "";
+// Handle Form Submission
+app.post('/submit-admission', upload.none(), async (req, res) => {
+    try {
+        console.log('Form Data:', req.body);
 
-      console.log("Photo Path:", photo); // Debug photo path
-      console.log("Fee Receipt Path:", feeReceipt); // Debug receipt path
+        // Create admission document
+        const admission = new Admission({
+            name: req.body.name,
+            father_name: req.body['father-name'],
+            mother_name: req.body['mother-name'],
+            dob: req.body.dob,
+            phone: req.body.phone,
+            emergency_contact: req.body['emergency-contact'],
+            address: req.body.address,
+            course: req.body.course,
+            branch: req.body.branch,
+            board10: req.body.board10,
+            marks10: req.body.marks10,
+            board12: req.body.board12,
+            marks12: req.body.marks12,
+            physics_marks: req.body['physics-marks'],
+            chemistry_marks: req.body['chemistry-marks'],
+            maths_marks: req.body['maths-marks'],
+            jee_score: req.body['jee-score'],
+            cuet_score: req.body['cuet-score'],
+            category: req.body.category
+        });
 
-      const admission = new Admission({
-        name: formData.name,
-        father_name: formData["father-name"],
-        mother_name: formData["mother-name"],
-        dob: formData.dob,
-        phone: formData.phone,
-        emergency_contact: formData["emergency-contact"],
-        address: formData.address,
-        course: formData.course,
-        branch: formData.branch,
-        board10: formData.board10,
-        marks10: formData.marks10,
-        board12: formData.board12,
-        marks12: formData.marks12,
-        jee_score: formData["jee-score"],
-        cuet_score: formData["cuet-score"],
-        category: formData.category,
-        photo: photo, // Save photo path
-        fee_receipt: feeReceipt, // Save receipt path
-      });
+        // Save to database
+        await admission.save();
+        res.status(200).json({ message: 'Form submitted successfully!' });
+    } catch (error) {
+        console.error('Error during form submission:', error);
+        res.status(500).json({ message: 'Error saving data', error: error.message });
+    }
+});
 
-      await admission.save();
-      res.json({ message: "Form submitted successfully!" });
-    } catch (error) { console.error("Error saving data:", error); // Log error 
-                     res.status(500).json({ message: "Error saving data", error: error.message });
-                    }
-   }
-);
-
-// Test Route
-app.get("/", (req, res) => {
-  res.send("Server is running!");
+// Basic GET Route for Testing
+app.get('/', (req, res) => {
+    res.send("Hello, World!");
 });
 
 // Start Server
-const PORT = process.env.PORT || 3000;
-mongoose.connection.once("open", () => {
-  app.listen(PORT, () => {
-    console.log(`Server started on port ${PORT}`);
-  });
+app.listen(3000, () => {
+    console.log('Server started on http://localhost:3000');
 });
+
