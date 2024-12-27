@@ -123,6 +123,6 @@ app.get("/", (req, res) => {
 // Start Server
 mongoose.connection.once("open", () => {
   app.listen(3000, () => {
-    console.log("Server started on http://localhost:3000");
+    console.log("Server started on https://uiet-admission-form.vercel.app");
   });
 });
