@@ -127,7 +127,7 @@
             const formData = new FormData(event.target);
 
             try {
-                const response = await fetch("uiet-admission-form-api.vercel.app", {
+                const response = await fetch("uiet-admission-form-api.vercel.app/submit-admission", {
                     method: "POST",
                     body: formData, // Send FormData directly
                 });
