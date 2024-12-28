@@ -20,8 +20,7 @@ app.use(cors(
 app.use("/uploads", express.static("uploads")); // Serve static files
 
 // Database Connection
-mongoose
-  .connect(
+mongoose.connect(
     "mongodb+srv://Abhinav:qprovers13@cluster0.omb8n.mongodb.net/admission_form?retryWrites=true&w=majority&appName=Cluster0"
   )
   .then(() => console.log("MongoDB connected successfully!"))
