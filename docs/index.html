@@ -131,6 +131,9 @@
                 const response = await fetch("https://uiet-admission-form-api.vercel.app/submit-admission", {
                     method: "POST",
                     body: formData, // Send FormData directly
+                     headers: {
+      'Content-Type': 'multipart/form-data', // Ensure this matches the data you're sending
+    },
                     
                 });
 
