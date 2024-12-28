@@ -14,13 +14,11 @@ app.use('/favicon.ico', express.static('docs/favicon.ico'));
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors(
-  {
-  origin: ["https://uiet-admission-form-git-main-abhinav-1023s-projects.vercel.app","https://uiet-admission-form-api.vercel.app/submit-admission"]
-  method:["POST","GET","PUT","DELETE"],
-  credentials:true
-  }
-));
+app.use(cors({ 
+  origin: [ 'https://uiet-admission-form-git-main-abhinav-1023s-projects.vercel.app', 'https://uiet-admission-form.vercel.app' ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+  allowedHeaders: ['Content-Type','Authorization'],
+  credentials: true }));
 app.use("/uploads", express.static("uploads")); // Serve static files
 
 // Database Connection
