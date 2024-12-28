@@ -2,36 +2,41 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import multer from "multer";
+import path from "path";
 import fs from "fs";
 
 const app = express();
+app.get('/favicon.ico', (req, res) => res.status(204).end());
+
+app.use('/favicon.ico', express.static('docs/favicon.ico'));
+
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({
-  origin: [
-    'https://uiet-admission-form-git-main-abhinav-1023s-projects.vercel.app',
-    'https://uiet-admission-form.vercel.app',
+app.use(cors({ 
+  origin: [ 
+    'https://uiet-admission-form-git-main-abhinav-1023s-projects.vercel.app', 
+    'https://uiet-admission-form.vercel.app' 
   ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+  allowedHeaders: ['Content-Type','Authorization'],
+  credentials: false 
 }));
 
 app.use("/uploads", express.static("uploads")); // Serve static files
 
 // Database Connection
-const mongoUri = process.env.MONGO_URI; // Use environment variable for MongoDB URI
-
-mongoose.connect(mongoUri)
+mongoose.connect(
+    "mongodb+srv://Abhinav:qprovers13@cluster0.omb8n.mongodb.net/admission_form?retryWrites=true&w=majority&appName=Cluster0"
+  )
   .then(() => console.log("MongoDB connected successfully!"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
 // Set up multer for file storage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const dir = "/tmp";  // Use /tmp directory for file storage in Vercel (serverless environment)
+    const dir = "./uploads";
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
@@ -44,7 +49,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// Schema for Admission Form
+// Schema
 const admissionSchema = new mongoose.Schema({
   name: String,
   father_name: String,
@@ -80,7 +85,9 @@ app.post(
 
       const formData = req.body;
       const photo = req.files["photo"] ? req.files["photo"][0].path : "";
-      const feeReceipt = req.files["receipt"] ? req.files["receipt"][0].path : "";
+      const feeReceipt = req.files["receipt"]
+        ? req.files["receipt"][0].path
+        : "";
 
       console.log("Photo Path:", photo); // Debug photo path
       console.log("Fee Receipt Path:", feeReceipt); // Debug receipt path
@@ -109,7 +116,7 @@ app.post(
       await admission.save();
       res.json({ message: "Form submitted successfully!" });
     } catch (error) {
-      console.error("Error saving data:", error);
+      console.error("Error saving data:", error); // Log error
       res.status(500).json({ message: "Error saving data", error: error.message });
     }
   }
@@ -120,5 +127,8 @@ app.get("/", (req, res) => {
   res.send("Server is running!");
 });
 
+
+
 // Export the app for Vercel
 module.exports = app;
+
