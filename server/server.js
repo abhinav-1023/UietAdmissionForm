@@ -21,7 +21,7 @@ app.use(cors({
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'], 
   allowedHeaders: ['Content-Type','Authorization'],
-  credentials: false // Allow credentials (cookies, authorization headers)
+  credentials: false 
 }));
 
 app.use("/uploads", express.static("uploads")); // Serve static files
