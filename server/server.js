@@ -17,7 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors(
   {
   origin:["https://uiet-admission-form.vercel.app"],
-  method:["POST","GET"],
+  method:["POST","GET","PUT","DELETE"],
   credentials:true
   }
 ));
