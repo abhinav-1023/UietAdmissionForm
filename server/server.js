@@ -123,7 +123,7 @@ app.post(
 );
 
 // Test Route
-app.get("/", (req, res) => {
+app.get("/hello", (req, res) => {
   res.send("Server is running!");
 });
 
