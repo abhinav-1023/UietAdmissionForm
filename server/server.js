@@ -128,7 +128,9 @@ app.get("/", (req, res) => {
 });
 
 // Start Server
-
+mongoose.connection.once("open", () => {
+  console.log("MongoDB connected successfully!");
+});
 
 // Export the app for Vercel
 module.exports = app;
