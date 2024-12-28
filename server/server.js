@@ -7,6 +7,9 @@ import fs from "fs";
 
 const app = express();
 
+app.use('/favicon.ico', express.static('path-to-your-favicon'));
+
+
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
