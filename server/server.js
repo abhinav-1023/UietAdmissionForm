@@ -7,7 +7,7 @@ import fs from "fs";
 
 const app = express();
 
-app.use('/favicon.ico', express.static('path-to-your-favicon'));
+app.use('/favicon.ico', express.static('docs/favicon.ico'));
 
 
 // Middleware
