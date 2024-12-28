@@ -6,6 +6,7 @@ import path from "path";
 import fs from "fs";
 
 const app = express();
+app.get('/favicon.ico', (req, res) => res.status(204).end());
 
 app.use('/favicon.ico', express.static('docs/favicon.ico'));
 
