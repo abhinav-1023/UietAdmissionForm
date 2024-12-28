@@ -15,10 +15,15 @@ app.use('/favicon.ico', express.static('docs/favicon.ico'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({ 
-  origin: [ 'https://uiet-admission-form-git-main-abhinav-1023s-projects.vercel.app', 'https://uiet-admission-form.vercel.app' ],
+  origin: [ 
+    'https://uiet-admission-form-git-main-abhinav-1023s-projects.vercel.app', 
+    'https://uiet-admission-form.vercel.app' 
+  ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'], 
   allowedHeaders: ['Content-Type','Authorization'],
-  credentials: true }));
+  credentials: true // Allow credentials (cookies, authorization headers)
+}));
+
 app.use("/uploads", express.static("uploads")); // Serve static files
 
 // Database Connection
