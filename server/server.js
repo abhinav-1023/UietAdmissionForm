@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors(
   {
-  origin: "https://uiet-admission-form-git-main-abhinav-1023s-projects.vercel.app",
+  origin: ["https://uiet-admission-form-git-main-abhinav-1023s-projects.vercel.app","https://uiet-admission-form-api.vercel.app/submit-admission"]
   method:["POST","GET","PUT","DELETE"],
   credentials:true
   }
