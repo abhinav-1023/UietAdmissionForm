@@ -123,10 +123,7 @@ app.post(
 );
 
 // Test Route
-app.get("/hello", (req, res) => {
-  res.send("Server is running!");
-});
-
+app.get('/', (req, res) => { res.send('Welcome to the UIET Admission Form API!'); })
 // Start Server
 mongoose.connection.once("open", () => {
   console.log("MongoDB connected successfully!");
