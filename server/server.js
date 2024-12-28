@@ -10,6 +10,7 @@ app.get('/favicon.ico', (req, res) => res.status(204).end());
 
 app.use('/favicon.ico', express.static('docs/favicon.ico'));
 
+
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -27,15 +28,15 @@ app.use("/uploads", express.static("uploads")); // Serve static files
 
 // Database Connection
 mongoose.connect(
-  "mongodb+srv://Abhinav:qprovers13@cluster0.omb8n.mongodb.net/admission_form?retryWrites=true&w=majority&appName=Cluster0"
-)
-.then(() => console.log("MongoDB connected successfully!"))
-.catch((err) => console.error("MongoDB connection error:", err));
+    "mongodb+srv://Abhinav:qprovers13@cluster0.omb8n.mongodb.net/admission_form?retryWrites=true&w=majority&appName=Cluster0"
+  )
+  .then(() => console.log("MongoDB connected successfully!"))
+  .catch((err) => console.error("MongoDB connection error:", err));
 
-// Set up multer for file storage (storing files in /tmp on Vercel)
+// Set up multer for file storage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const dir = "/tmp";  // Use /tmp directory in Vercel for temporary file storage
+    const dir = "./uploads";
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
@@ -125,6 +126,9 @@ app.post(
 app.get("/", (req, res) => {
   res.send("Server is running!");
 });
+
+// Start Server
+
 
 // Export the app for Vercel
 module.exports = app;
