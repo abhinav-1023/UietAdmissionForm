@@ -125,8 +125,10 @@ app.post(
 // Test Route
 app.get('/', (req, res) => { res.send('Welcome to the UIET Admission Form API!'); })
 // Start Server
-const PORT = 3000; // You can change this to any port number you prefer 
-app.listen(PORT, () => { console.log(`Server is running on port ${PORT}`); }); });
+app.listen(process.env.PORT || 3000, () => {
+  console.log('Server running...');
+});
+
 
 
 mongoose.connection.once("open", () => {
