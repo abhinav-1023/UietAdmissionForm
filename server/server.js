@@ -139,4 +139,4 @@ mongoose.connection.once("open", () => {
 });
 
 // Export the app for Vercel
-module.exports = app;
+export default app;
