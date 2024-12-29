@@ -31,7 +31,7 @@ app.use('/uploads', express.static(path.join('/tmp', 'uploads')));
 
 // Database Connection
 mongoose.connect(
-    "mongodb+srv://Abhinav:qprovers13@cluster0.omb8n.mongodb.net/admission_form?retryWrites=true&w=majority&appName=Cluster0"
+    MONGODB_URI
   )
   .then(() => console.log("MongoDB connected successfully!"))
   .catch((err) => console.error("MongoDB connection error:", err));
