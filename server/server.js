@@ -131,9 +131,6 @@ app.post(
 // Test Route
 app.get('/', (req, res) => { res.send('Welcome to the UIET Admission Form API!'); })
 // Start Server
-app.listen(process.env.PORT || 3000, () => {
-  console.log('Server running...');
-});
 
 
 
