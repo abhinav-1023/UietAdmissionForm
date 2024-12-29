@@ -1,15 +1,14 @@
-import express from "express";
-import mongoose from "mongoose";
-import cors from "cors";
-import multer from "multer";
-import path from "path";
-import fs from "fs";
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
 
 const app = express();
+
 app.get('/favicon.ico', (req, res) => res.status(204).end());
-
 app.use('/favicon.ico', express.static('docs/favicon.ico'));
-
 
 // Middleware
 app.use(express.json());
@@ -18,7 +17,6 @@ app.use(cors({
   origin: [ 
     'https://uiet-admission-form-git-main-abhinav-1023s-projects.vercel.app/', 
     'https://uiet-admission-form.vercel.app/',
-    'https://uiet-admission-form.vercel.app/',
     'https://uiet-admission-form-api-abhinav-1023s-projects.vercel.app/'
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'], 
@@ -26,22 +24,20 @@ app.use(cors({
   credentials: false 
 }));
 
- // Serve static files
-app.use('/uploads', express.static(path.join('/tmp', 'uploads')));
+// Serve static files
+app.use(express.static(path.join(__dirname, '../docs')));
 
 // Database Connection
-mongoose.connect(
-    process.env.MONGODB_URI
-  )
+mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log("MongoDB connected successfully!"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
 // Set up multer for file storage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const dir = path.join('/tmp', 'uploads'); // Use /tmp for temporary storage
+    const dir = path.join('/tmp', 'uploads');
     if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true }); // Create directory if it doesn't exist
+      fs.mkdirSync(dir, { recursive: true });
     }
     cb(null, dir);
   },
@@ -52,10 +48,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-
-const upload = multer({ storage: storage });
-
-// Schema
+// Define the admission schema
 const admissionSchema = new mongoose.Schema({
   name: String,
   father_name: String,
@@ -86,17 +79,9 @@ app.post(
   upload.fields([{ name: "photo" }, { name: "receipt" }]),
   async (req, res) => {
     try {
-      console.log("Request Body:", req.body); // Debug request body
-      console.log("Uploaded Files:", req.files); // Debug uploaded files
-
       const formData = req.body;
       const photo = req.files["photo"] ? req.files["photo"][0].path : "";
-      const feeReceipt = req.files["receipt"]
-        ? req.files["receipt"][0].path
-        : "";
-
-      console.log("Photo Path:", photo); // Debug photo path
-      console.log("Fee Receipt Path:", feeReceipt); // Debug receipt path
+      const feeReceipt = req.files["receipt"] ? req.files["receipt"][0].path : "";
 
       const admission = new Admission({
         name: formData.name,
@@ -115,28 +100,23 @@ app.post(
         jee_score: formData["jee-score"],
         cuet_score: formData["cuet-score"],
         category: formData.category,
-        photo: photo, // Save photo path
-        fee_receipt: feeReceipt, // Save receipt path
+        photo: photo,
+        fee_receipt: feeReceipt,
       });
 
       await admission.save();
       res.json({ message: "Form submitted successfully!" });
     } catch (error) {
-      console.error("Error saving data:", error); // Log error
+      console.error("Error saving data:", error);
       res.status(500).json({ message: "Error saving data", error: error.message });
     }
   }
 );
 
-// Test Route
-app.get('/', (req, res) => { res.send('Welcome to the UIET Admission Form API!'); })
-// Start Server
-
-
-
-mongoose.connection.once("open", () => {
-  console.log("MongoDB connected successfully!");
+// Default route for testing
+app.get('/', (req, res) => {
+  res.send('Welcome to the UIET Admission Form API!');
 });
 
-// Export the app for Vercel
+// Export your app
 export default app;
