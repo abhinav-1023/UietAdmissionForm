@@ -26,7 +26,8 @@ app.use(cors({
   credentials: false 
 }));
 
-app.use("/uploads", express.static("uploads")); // Serve static files
+ // Serve static files
+app.use('/uploads', express.static(path.join('/tmp', 'uploads')));
 
 // Database Connection
 mongoose.connect(
@@ -38,9 +39,9 @@ mongoose.connect(
 // Set up multer for file storage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const dir = "./uploads";
+    const dir = path.join('/tmp', 'uploads'); // Use /tmp for temporary storage
     if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
+      fs.mkdirSync(dir, { recursive: true }); // Create directory if it doesn't exist
     }
     cb(null, dir);
   },
@@ -48,6 +49,9 @@ const storage = multer.diskStorage({
     cb(null, `${Date.now()}-${file.originalname}`);
   },
 });
+
+const upload = multer({ storage: storage });
+
 
 const upload = multer({ storage: storage });
 
